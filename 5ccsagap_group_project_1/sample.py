@@ -32,7 +32,7 @@ all_images = all_annotations['image_name'].unique()
 sample_size = 2000  # Adjust as needed
 
 # Set random seed for repeatability
-np.random.seed(42)
+np.random.seed(1)
 
 # Randomly sample images
 sampled_images = np.random.choice(all_images, size=sample_size, replace=False)
