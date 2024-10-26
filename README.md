@@ -42,4 +42,5 @@ python 5ccsagap_group_project_1/eda.py
 
 - Run the following command to sample the dataset (should be done only once as the results are saved to a csv file):
 ```shell
-
+python 5ccsagap_group_project_1/sample.py    
+```
