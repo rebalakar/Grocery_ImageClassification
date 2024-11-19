@@ -1,0 +1,10 @@
+# data.yaml
+
+train: /home/rebal/Documents/VSCode/5CCSAGAP-group-project-1/dataset/images/train
+val: /home/rebal/Documents/VSCode/5CCSAGAP-group-project-1/dataset/images/val
+test: /home/rebal/Documents/VSCode/5CCSAGAP-group-project-1/dataset/images/test
+
+nc: 1
+
+names: ['object']
+
