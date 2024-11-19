@@ -25,7 +25,7 @@ print("Contents of script directory:", os.listdir(script_dir))
 print("Data template path:", data_template_path)
 
 # Read the data.yaml template
-with open('data_template.yaml', 'r') as f:
+with open(data_template_path, 'r') as f:
     data_yaml_content = f.read()
 
 # Replace the placeholder with the actual dataset path
