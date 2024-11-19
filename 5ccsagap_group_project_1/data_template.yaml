@@ -1,0 +1,8 @@
+# data_template.yaml
+
+train: "{dataset_path}/images/train"
+val: "{dataset_path}/images/val"
+test: "{dataset_path}/images/test"  # Remove this line if you don't have a test set
+
+nc: 1  # Number of classes
+names: ['object']  # Class names
