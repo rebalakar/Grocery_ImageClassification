@@ -4,7 +4,7 @@ import pandas as pd
 # Define paths
 annotations_dir = './sampled_annotations'
 images_dir = './data/SKU110K_fixed/images'
-output_base_dir = './data/SKU110_txt'
+output_base_dir = './dataset/labels'
 
 
 # Ensure output base directory exists
