@@ -13,19 +13,12 @@ task.execute_remotely(queue_name='default', exit_process=True)
 dataset = Dataset.get(dataset_name='Sampled Images', dataset_project='5CCSAGAP Group D')
 dataset_path = dataset.get_local_copy()
 
-# Get the directory where model.py is located
-script_dir = os.path.dirname(os.path.abspath(__file__))
+# Fetch the 'data_template.yaml' artifact
+artifact_task = Task.get_task(project_name='5CCSAGAP Group D', task_name='Upload Data Template')
+artifact_path = artifact_task.artifacts['data_template.yaml'].get_local_copy()
 
-# Construct the full path to data_template.yaml
-data_template_path = os.path.join(script_dir, 'data_template.yaml')
-
-# Debugging statements
-print("Script directory:", script_dir)
-print("Contents of script directory:", os.listdir(script_dir))
-print("Data template path:", data_template_path)
-
-# Read the data.yaml template
-with open(data_template_path, 'r') as f:
+# Read the data_template.yaml content
+with open(artifact_path, 'r') as f:
     data_yaml_content = f.read()
 
 # Replace the placeholder with the actual dataset path
@@ -46,7 +39,7 @@ model.train(
     epochs=16,            # Number of epochs to train for (adjust based on training needs)
     imgsz=640,            # Image size
     batch=16,             # Batch size
-    device='cuda'          # Use 'cpu' or 'cuda' (if you have a GPU)
+    device='0'          # Use 'cpu' or 'cuda' (if you have a GPU)
 )
 
 # Save the trained model
