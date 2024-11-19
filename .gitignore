@@ -157,7 +157,7 @@ cython_debug/
 data/
 sampled_annotations/
 dataset/
-5ccsagap_group_project_1/data_template.yaml
+
 
 #yolo model
 yolov5su.pt

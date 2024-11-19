@@ -93,7 +93,7 @@ The `data_template.yaml` file is a template used to define dataset paths and oth
 
 1. Verify that the `data_template.yaml` file is located in the project directory:
 
-CCSAGAP-group-project-1/data_template.yaml
+5ccsagap_group_project_1/data_template.yaml
 
 
 2. Use the following command to upload it:
