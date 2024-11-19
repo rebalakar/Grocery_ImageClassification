@@ -3,10 +3,12 @@
 import os
 import pandas as pd
 import numpy as np
+import shutil
 
 # Set up directories
 data_dir = 'data/SKU110K_fixed'
 annotations_dir = os.path.join(data_dir, 'annotations')
+images_dir = os.path.join(data_dir, 'images')  # Directory where original images are stored
 COLUMNS_TO_SAVE = ['image_name', 'x1', 'y1', 'x2', 'y2', 'class', 'image_width', 'image_height']
 
 # Load only the original train annotations
@@ -72,7 +74,17 @@ sampled_test_annotations = sampled_annotations[sampled_annotations['image_name']
 
 # Create directory for sampled annotations
 sampled_data_dir = 'sampled_annotations'
+sampled_images_dir = 'sampled_images'
 os.makedirs(sampled_data_dir, exist_ok=True)
+os.makedirs(sampled_images_dir, exist_ok=True)
+
+# Create subdirectories for images in each split
+train_images_dir = os.path.join(sampled_images_dir, 'train')
+val_images_dir = os.path.join(sampled_images_dir, 'val')
+test_images_dir = os.path.join(sampled_images_dir, 'test')
+os.makedirs(train_images_dir, exist_ok=True)
+os.makedirs(val_images_dir, exist_ok=True)
+os.makedirs(test_images_dir, exist_ok=True)
 
 # Save annotations to CSV files
 def save_annotations(annotations_df, file_path):
@@ -87,4 +99,20 @@ save_annotations(sampled_train_annotations, os.path.join(sampled_data_dir, 'trai
 save_annotations(sampled_val_annotations, os.path.join(sampled_data_dir, 'val.csv'))
 save_annotations(sampled_test_annotations, os.path.join(sampled_data_dir, 'test.csv'))
 
+# Function to copy sampled images to their respective directories
+def copy_images(image_list, dest_dir):
+    for image_name in image_list:
+        source_path = os.path.join(images_dir, image_name)
+        dest_path = os.path.join(dest_dir, image_name)
+        if os.path.exists(source_path):
+            shutil.copy(source_path, dest_path)
+        else:
+            print(f"Warning: Image {image_name} not found in the source directory.")
+
+# Copy images for each split
+copy_images(sampled_train_images, train_images_dir)
+copy_images(sampled_val_images, val_images_dir)
+copy_images(sampled_test_images, test_images_dir)
+
 print("Sampled annotations are saved in the 'sampled_annotations' directory.")
+print("Sampled images are saved in the 'sampled_images/train', 'sampled_images/val', and 'sampled_images/test' directories.")
