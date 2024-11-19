@@ -13,6 +13,17 @@ task.execute_remotely(queue_name='default', exit_process=True)
 dataset = Dataset.get(dataset_name='Sampled Images', dataset_project='5CCSAGAP Group D')
 dataset_path = dataset.get_local_copy()
 
+# Get the directory where model.py is located
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the full path to data_template.yaml
+data_template_path = os.path.join(script_dir, 'data_template.yaml')
+
+# Debugging statements
+print("Script directory:", script_dir)
+print("Contents of script directory:", os.listdir(script_dir))
+print("Data template path:", data_template_path)
+
 # Read the data.yaml template
 with open('data_template.yaml', 'r') as f:
     data_yaml_content = f.read()
