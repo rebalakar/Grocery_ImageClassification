@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 from clearml import Task, Dataset
+import torch
 import tempfile
 import os
 
@@ -32,6 +33,7 @@ with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as tmp:
 # Load a YOLOv5 model (e.g., pretrained on COCO)
 model = YOLO('yolov5s.pt')  
 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Train the model
 model.train(
@@ -41,7 +43,6 @@ model.train(
     batch=16,             # Batch size
     device='cuda'          # Use 'cpu' or 'cuda' (if you have a GPU)
 )
-hello
 
 # Save the trained model
 model.save('./yolov5_trained_model.pt')
