@@ -22,8 +22,15 @@ artifact_path = artifact_task.artifacts['data_template.yaml'].get_local_copy()
 with open(artifact_path, 'r') as f:
     data_yaml_content = f.read()
 
+#Debug: Print dataset path and original YAML content
+print("Dataset Path:", dataset_path)
+print("Original Data YAML Content:\n", data_yaml_content)
+
 # Replace the placeholder with the actual dataset path
 data_yaml_content = data_yaml_content.replace('{dataset_path}', dataset_path)
+
+# Debug: Print modified YAML content
+print("Modified Data YAML Content:\n", data_yaml_content)
 
 # Write the updated data.yaml to a temporary file
 with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as tmp:
@@ -41,7 +48,7 @@ model.train(
     epochs=16,            # Number of epochs to train for (adjust based on training needs)
     imgsz=640,            # Image size
     batch=16,             # Batch size
-    device='cuda'          # Use 'cpu' or 'cuda' (if you have a GPU)
+    device='device'          # Use 'cpu' or 'cuda' (if you have a GPU)
 )
 
 # Save the trained model
