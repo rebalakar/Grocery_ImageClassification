@@ -12,6 +12,14 @@ task.connect_configuration({"requirements_file": "requirements.txt"})
 # Enqueue the task for remote execution
 task.execute_remotely(queue_name='default', exit_process=True)
 
+
+try:
+    import numpy as np
+    print("NumPy version:", np.__version__)
+except ImportError:
+    print("NumPy is not installed.")
+
+
 # Get the dataset from ClearML
 dataset = Dataset.get(dataset_name='Sampled Images', dataset_project='5CCSAGAP Group D')
 dataset_path = dataset.get_local_copy()
