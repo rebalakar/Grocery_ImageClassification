@@ -39,7 +39,7 @@ model.train(
     epochs=16,            # Number of epochs to train for (adjust based on training needs)
     imgsz=640,            # Image size
     batch=16,             # Batch size
-    device='0'          # Use 'cpu' or 'cuda' (if you have a GPU)
+    device='cuda'          # Use 'cpu' or 'cuda' (if you have a GPU)
 )
 
 # Save the trained model
