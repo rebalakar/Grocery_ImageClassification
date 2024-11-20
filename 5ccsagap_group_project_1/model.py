@@ -21,7 +21,8 @@ artifact_path = artifact_task.artifacts['data_template.yaml'].get_local_copy()
 # Read the data_template.yaml content
 with open(artifact_path, 'r') as f:
     data_yaml_content = f.read()
-    
+    print("Read YAML Content:\n", data_yaml_content)  # Debugging
+
 
 #Debug: Print dataset path and original YAML content
 print("Dataset Path:", dataset_path)
@@ -29,6 +30,7 @@ print("Original Data YAML Content:\n", data_yaml_content)
 
 # Replace the placeholder with the actual dataset path
 data_yaml_content = data_yaml_content.replace('{dataset_path}', dataset_path)
+print("Modified YAML Content After Replacement:\n", data_yaml_content)  # Debugging
 
 # Debug: Print modified YAML content
 print("Modified Data YAML Content:\n", data_yaml_content)
@@ -42,7 +44,7 @@ print("Data YAML Path:", data_yaml_path)
 with open(data_yaml_path, 'r') as f:
     data_yaml_content_debug = f.read()
     print("Data YAML Content:\n", data_yaml_content_debug)
-    
+
 # Load a YOLOv5 model (e.g., pretrained on COCO)
 model = YOLO('yolov5s.pt')  
 
