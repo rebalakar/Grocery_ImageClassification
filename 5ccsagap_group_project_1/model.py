@@ -7,6 +7,18 @@ import os
 # Initialize ClearML task
 task = Task.init(project_name='5CCSAGAP Group D', task_name='YOLOv5 Training and Tracking')
 
+task.set_requirements([
+    'numpy=^1.26.0',
+    'pandas==2.2.3',
+    'matplotlib= ^3.9.2',
+    'seaborn=^0.13.2',
+    'opencv-python= ^4.10.0.84',
+    'scikit-learn= ^1.5.2',
+    'ultralytics= ^8.3.29',
+    'clearml=^1.16.5'
+])
+
+
 # Enqueue the task for remote execution
 task.execute_remotely(queue_name='default', exit_process=True)
 
