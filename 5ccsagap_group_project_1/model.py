@@ -41,6 +41,7 @@ model.train(
     batch=16,             # Batch size
     device='cuda'          # Use 'cpu' or 'cuda' (if you have a GPU)
 )
+hello
 
 # Save the trained model
 model.save('./yolov5_trained_model.pt')
