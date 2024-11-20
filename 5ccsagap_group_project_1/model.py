@@ -21,6 +21,7 @@ artifact_path = artifact_task.artifacts['data_template.yaml'].get_local_copy()
 # Read the data_template.yaml content
 with open(artifact_path, 'r') as f:
     data_yaml_content = f.read()
+    
 
 #Debug: Print dataset path and original YAML content
 print("Dataset Path:", dataset_path)
@@ -37,6 +38,11 @@ with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as tmp:
     tmp.write(data_yaml_content)
     data_yaml_path = tmp.name
 
+print("Data YAML Path:", data_yaml_path)
+with open(data_yaml_path, 'r') as f:
+    data_yaml_content_debug = f.read()
+    print("Data YAML Content:\n", data_yaml_content_debug)
+    
 # Load a YOLOv5 model (e.g., pretrained on COCO)
 model = YOLO('yolov5s.pt')  
 
@@ -48,7 +54,7 @@ model.train(
     epochs=16,            # Number of epochs to train for (adjust based on training needs)
     imgsz=640,            # Image size
     batch=16,             # Batch size
-    device='device'          # Use 'cpu' or 'cuda' (if you have a GPU)
+    device= device        # Use 'cpu' or 'cuda' (if you have a GPU)
 )
 
 # Save the trained model
