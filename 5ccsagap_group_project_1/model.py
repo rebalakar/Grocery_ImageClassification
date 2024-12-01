@@ -72,7 +72,7 @@ model.train(
     imgsz=640,             # Image size
     batch=16,              # Batch size
     device=device,         # Use 'cpu' or 'cuda' (if you have a GPU)
-    # optimizer='AdamW',   # Use AdamW for regularization
+    optimizer='AdamW',   # Use AdamW for regularization
     **augmentation_params  # Unpack the augmentation parameters
 )
 
@@ -88,6 +88,13 @@ print("Validation Metrics:", metrics_val)
 print("Testing the model...")
 metrics_test = model.val(split='test')  # Validate the model performance on the test set
 print("Test Metrics:", metrics_test)
+
+metrics = task.get_reported_scalars()
+
+for title, series_dict in metrics.items():
+    print(f"Title: {title}")
+    for series, values in series_dict.items():
+        print(f"  Series: {series}")
 
 # Inference (optional)
 # sample_image_path = "./images/sample_image.jpg"  # Replace with a valid test image path
