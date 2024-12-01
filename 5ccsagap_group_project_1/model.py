@@ -31,7 +31,7 @@ artifact_path = artifact_task.artifacts['data_template.yaml'].get_local_copy()
 # Read the data_template.yaml content
 with open(artifact_path, 'r') as f:
     data_yaml_content = f.read()
-    
+
 # Replace the placeholder with the actual dataset path
 data_yaml_content = data_yaml_content.replace('{dataset_path}', dataset_path)
 
@@ -45,13 +45,35 @@ model = YOLO('yolov5s.pt')
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+# Set augmentation parameters
+augmentation_params = {
+    'hsv_h': 0.03,       # Hue augmentation (fraction)
+    'hsv_s': 0.8,        # Saturation augmentation (fraction)
+    'hsv_v': 0.5,        # Value augmentation (fraction)
+    'degrees': 20,       # Image rotation (degrees)
+    'translate': 0.1,    # Image translation (fraction)
+    'scale': 0.0,        # Image scaling (fraction)
+    'shear': 0.0,        # Image shearing (degrees)
+    'perspective': 0.1,  # Perspective transformation (fraction)
+    'flipud': 0.5,       # Vertical flip probability
+    'fliplr': 0.5,       # Horizontal flip probability
+    'mosaic': 1.0,       # Mosaic augmentation probability
+    'mixup': 0.2,        # Image mixup probability
+    'copy_paste': 0.1    # Segment copy-paste probability
+}
+
+# Log augmentation parameters to ClearML
+task.connect(augmentation_params)
+
 # Train the model
 model.train(
-    data=data_yaml_path,  # Path to the YAML file with dataset information
-    epochs=16,            # Number of epochs to train for (adjust based on training needs)
-    imgsz=640,            # Image size
-    batch=16,             # Batch size
-    device= device        # Use 'cpu' or 'cuda' (if you have a GPU)
+    data=data_yaml_path,   # Path to the YAML file with dataset information
+    epochs=16,             # Number of epochs to train for (adjust based on training needs)
+    imgsz=640,             # Image size
+    batch=16,              # Batch size
+    device=device,         # Use 'cpu' or 'cuda' (if you have a GPU)
+    optimizer='AdamW',   # Use AdamW for regularization
+    **augmentation_params  # Unpack the augmentation parameters
 )
 
 # Save the trained model
@@ -66,6 +88,13 @@ print("Validation Metrics:", metrics_val)
 print("Testing the model...")
 metrics_test = model.val(split='test')  # Validate the model performance on the test set
 print("Test Metrics:", metrics_test)
+
+metrics = task.get_reported_scalars()
+
+for title, series_dict in metrics.items():
+    print(f"Title: {title}")
+    for series, values in series_dict.items():
+        print(f"  Series: {series}")
 
 # Inference (optional)
 # sample_image_path = "./images/sample_image.jpg"  # Replace with a valid test image path
