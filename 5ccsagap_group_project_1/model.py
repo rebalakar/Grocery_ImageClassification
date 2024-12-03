@@ -42,8 +42,7 @@ def main():
         tmp.write(data_yaml_content)
         data_yaml_path = tmp.name
 
-    # Load and verify data.yaml
-    data_yaml_path = '../data/data.yaml'
+    # Load and verify data.yaml using the temporary file path
     with open(data_yaml_path, 'r') as f:
         data_yaml = yaml.safe_load(f)
     logger.info(f"Loaded data.yaml: {data_yaml}")
@@ -65,16 +64,14 @@ def main():
 
     # Define the training command
     cmd = [
-        'python', '../yolov5/train.py',
+        'python3', '../yolov5/train.py',
         '--img', str(params['img']),
         '--batch', str(params['batch']),
         '--epochs', str(params['epochs']),
         '--data', params['data'],
         '--weights', params['weights'],
-        '--cache', params['cache'],
         '--project', params['project'],
         '--name', params['name'],
-        '--workers', str(params['workers'])
     ]
 
     # Run the training process
