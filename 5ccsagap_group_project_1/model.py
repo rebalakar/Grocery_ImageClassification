@@ -1,79 +1,90 @@
-# train_with_clearml.py
+# scripts/model.py
 
-from ultralytics import YOLO
 from clearml import Task, Dataset
-import os
+import subprocess
+from datetime import datetime
+import logging
 import yaml
+import tempfile
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def main():
     # Initialize ClearML Task
     task = Task.init(
-        project_name='YOLOv5_Custom_Project',
-        task_name='YOLOv5_Training_With_ClearML',
+        project_name='5CCSAGAP Group D',
+        task_name='Training',
         task_type=Task.TaskTypes.training
     )
 
     task.connect_configuration({"requirements_file": "requirements.txt"})
-    # Enqueue the task for remote execution
     task.execute_remotely(queue_name='default', exit_process=True)
 
-    # Get the dataset from ClearML
     dataset = Dataset.get(dataset_name='Sampled Images', dataset_project='5CCSAGAP Group D')
     dataset_path = dataset.get_local_copy()
 
+    # Fetch the 'data_template.yaml' artifact
+    artifact_task = Task.get_task(project_name='5CCSAGAP Group D', task_name='Upload Data Template')
+    artifact_path = artifact_task.artifacts['data_template.yaml'].get_local_copy()
 
+    # Read the data_template.yaml content
+    with open(artifact_path, 'r') as f:
+        data_yaml_content = f.read()
 
-    # Define paths based on the downloaded dataset
-    train_images = os.path.join(dataset_path, 'images', 'train')
-    val_images = os.path.join(dataset_path, 'images', 'val')
+    # Replace the placeholder with the actual dataset path
+    data_yaml_content = data_yaml_content.replace('{dataset_path}', dataset_path)
 
-    # Create a data configuration dictionary
-    data_config = {
-        'train': train_images,
-        'val': val_images,
-        'nc': 1,  # Number of classes
-        'names': ['object']  # Replace with your actual class name
-    }
+    # Write the updated data.yaml to a temporary file
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as tmp:
+        tmp.write(data_yaml_content)
+        data_yaml_path = tmp.name
 
-    # Save the data configuration to 'data.yaml'
-    data_yaml_path = os.path.join(dataset_path, 'data.yaml')
-    with open(data_yaml_path, 'w') as f:
-        yaml.dump(data_config, f)
+    # Load and verify data.yaml
+    data_yaml_path = '../data/data.yaml'
+    with open(data_yaml_path, 'r') as f:
+        data_yaml = yaml.safe_load(f)
+    logger.info(f"Loaded data.yaml: {data_yaml}")
 
-
-    # Define training parameters
-    model = YOLO('yolov5s.pt')  # Specify the model architecture
-
-    # Optional: Connect hyperparameters to ClearML
-    hyperparams = {
+    # Define hyperparameters
+    params = {
+        'img': 512,
+        'batch': 8,
         'epochs': 1,
-        'batch_size': 2,
-        'img_size': 640,
-        'data': 'data_yaml_path',  # Path to your data configuration
-        'optimizer': 'AdamW',
-        'learning_rate': 0.01,
-        # Add other hyperparameters as needed
+        'data': data_yaml_path,
+        'weights': 'yolov5s.pt',
+        'project': '5CCSAGAP Group D',
+        'name': f'Training_{datetime.now().strftime("%Y%m%d_%H%M%S")}',
     }
-    task.connect(hyperparams)
 
-    # Start training
-    results = model.train(
-        data=hyperparams['data'],
-        epochs=hyperparams['epochs'],
-        batch=hyperparams['batch_size'],
-        imgsz=hyperparams['img_size'],
-        optimizer=hyperparams['optimizer'],
-        lr0=hyperparams['learning_rate'],
-        # Add other training arguments as needed
-    )
+    # Log hyperparameters
+    task.connect(params)
+    logger.info(f"Hyperparameters: {params}")
 
-    # Upload the best model as an artifact
-    '''best_model_path = os.path.join(model.results.save_dir, 'best.pt')
-    task.upload_artifact(name='best_model', artifact_object=best_model_path)'''
+    # Define the training command
+    cmd = [
+        'python', '../yolov5/train.py',
+        '--img', str(params['img']),
+        '--batch', str(params['batch']),
+        '--epochs', str(params['epochs']),
+        '--data', params['data'],
+        '--weights', params['weights'],
+        '--cache', params['cache'],
+        '--project', params['project'],
+        '--name', params['name'],
+        '--workers', str(params['workers'])
+    ]
+
+    # Run the training process
+    subprocess.run(cmd, check=True)
+    logger.info("Training completed successfully.")
 
     # Close the ClearML task
     task.close()
+    logger.info("Closed ClearML task.")
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()
