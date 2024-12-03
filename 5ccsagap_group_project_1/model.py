@@ -49,9 +49,9 @@ def main():
 
     # Define hyperparameters
     params = {
-        'img': 512,
-        'batch': 8,
-        'epochs': 1,
+        'img': 640,
+        'batch': 16,
+        'epochs': 16,
         'data': data_yaml_path,
         'weights': 'yolov5s.pt',
         'project': '5CCSAGAP Group D',
