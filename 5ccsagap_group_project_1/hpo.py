@@ -57,7 +57,7 @@ execution_queue = 'default'
 # Example use case:
 an_optimizer = HyperParameterOptimizer(
     # This is the experiment we want to optimize
-    base_task_id='223b1f6877f34e8bb2d62f441f276ede',
+    base_task_id='c5b28d7d8bea428abac2d0deb5b34e09',
     # here we define the hyper-parameters to optimize
     # Notice: The parameter name should exactly match what you see in the UI: <section_name>/<parameter>
     # For Example, here we see in the base experiment a section Named: "General"
@@ -71,10 +71,10 @@ an_optimizer = HyperParameterOptimizer(
         UniformParameterRange('General/lrf', min_value=1e-5, max_value=1e-2, step_size=1e-5)
     ],
     # this is the objective metric we want to maximize/minimize
-    objective_metric_title='mAP50(B)',
-    objective_metric_series='metrics',
+    objective_metric_title='train',
+    objective_metric_series='box_loss',
     # now we decide if we want to maximize it or minimize it (accuracy we maximize)
-    objective_metric_sign='max',
+    objective_metric_sign='min',
     # let us limit the number of concurrent experiments,
     # this in turn will make sure we do dont bombard the scheduler with experiments.
     # if we have an auto-scaler connected, this, by proxy, will limit the number of machine
